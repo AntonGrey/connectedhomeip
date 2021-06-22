@@ -27,51 +27,52 @@ if (current_os == "mac") {
 }
 
 config("controller_wno_deprecate") {
-  cflags = [ 
-    "-Wno-deprecated-declarations", 
-  "-Wno-shadow",
-  "-Wno-unused-result",
-  "-Wsign-compare",
-  "-Wunreachable-code"
+  cflags = [
+    "-Wno-deprecated-declarations",
+    "-Wno-shadow",
+    "-Wno-unused-result",
+    "-Wsign-compare",
+    "-Wunreachable-code",
   ]
 }
 
 shared_library("CHIPController") {
   output_name = "CHIPController"
   output_dir = "${target_out_dir}/PyCHIPController"
-  include_dirs = [ 
-                  "." , 
-                  "/usr/local/include/pybind11/", 
-                  "/Library/Frameworks/Python.framework/Versions/3.9/include/python3.9",
-                  ]
+  include_dirs = [
+    ".",
+    "/usr/local/include/pybind11/",
+    "/Library/Frameworks/Python.framework/Versions/3.9/include/python3.9",
+  ]
 
   sources = [
-    "ChipDeviceController-StorageDelegate.cpp",
-    "ChipDeviceController-StorageDelegate.h",
-    "Delegate.cpp",
-    "Delegate.h",
     "CHIPDeviceController-PyBind.cpp",
     "CHIPDeviceController-PyBind.h",
+    "ChipDeviceController-StorageDelegate.cpp",
+    "ChipDeviceController-StorageDelegate.h",
     "ControlerBinder.cpp",
+    "Delegate.cpp",
+    "Delegate.h",
   ]
 
   if (chip_enable_ble) {
     if (current_os == "linux") {
       sources += [ "chip/ble/LinuxImpl.cpp" ]
     } else if (current_os == "mac") {
-      cflags = [ 
-        "-fobjc-arc" ,
-        "-fno-common", 
-        "-dynamic", 
-        "-DNDEBUG", 
-        "-g", 
+      cflags = [
+        "-fobjc-arc",
+        "-fno-common",
+        "-dynamic",
+        "-DNDEBUG",
+        "-g",
         "-fwrapv",
-        "-O3", 
+        "-O3",
         "-arch",
-         "arm64", 
-         "-arch", 
-         "x86_64",
-        "-g"]
+        "arm64",
+        "-arch",
+        "x86_64",
+        "-g",
+      ]
     } else {
       assert(false, "No BLE implementation available for the current OS.")
     }
@@ -90,14 +91,14 @@ shared_library("CHIPController") {
   ]
   configs += [ ":controller_wno_deprecate" ]
   ldflags = [
-    "-F/Library/Frameworks/",  
-    "-framework", 
-    "Python", 
-    "-framework", 
+    "-F/Library/Frameworks/",
+    "-framework",
+    "Python",
+    "-framework",
     "CoreFoundation",
     "-L/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/config-3.9-darwin",
-    "-frtti"
-    ]
+    "-frtti",
+  ]
 }
 
 pw_python_action("python") {
